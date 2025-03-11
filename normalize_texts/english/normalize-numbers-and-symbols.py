@@ -376,20 +376,6 @@ def split_sentences(text):
 
 def main():
     processor = TextProcessor()
-
-    # test_cases = [
-    #     "The overall budget allocation for the development of Scheduled Tribes has risen from Rs 10237.33 crore in 2024-25 to Rs 14925.81 crore in 2025-26",
-    #     "Growth rate was 15% in Q1 & 17.5% in Q2",
-    #     "Please contact support@company.com",
-    #     "Temperature increased by 2.5° & humidity by 5%",
-    #     "A&B Enterprises made $1525.75 @ their store",
-    #     "Score: 95/100 = 95%",
-    #     "Upgrade from V1.0 to V2.1 is complete",
-    #     "See Fig1 and Fig2 in Ch3",
-    #     "Phase P1 & P2 are complete",
-    #     "Table5 shows data from ID123"
-    # ]
-
     input_file = r"normalize_texts\english\input.txt"
     output_file = "output.txt"
 
