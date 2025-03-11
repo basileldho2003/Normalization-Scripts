@@ -304,6 +304,9 @@ class TextProcessor:
         )
         text = re.sub(unit_pattern, self._handle_measurement_units, text)
 
+        # Process Roman numerals
+        text = re.sub(r"\b[IVXLCDMivxlcdm]+\b", self._handle_roman_numeral, text)
+
         # Process other symbols
         for symbol, word in self.symbols.items():
             if symbol != '%':  # Skip % as it's already handled
