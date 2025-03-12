@@ -90,58 +90,41 @@ class TextProcessor:
                 total += value
             prev_value = value
         return total
-
+    
     def _handle_roman_numeral(self, match: re.Match) -> str:
-        """
-        Convert a matched Roman numeral into its spoken word form.
-        If the numeral appears as part of a sequence of initials or as a pronoun,
-        leave it unchanged. Otherwise, convert it.
-        """
         roman_str = match.group(0)
         text = match.string
         start = match.start()
+        
+        # Check for a valid Roman numeral using a well-known regex.
+        valid_roman_pattern = r"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
+        if not re.match(valid_roman_pattern, roman_str.upper()):
+            # If the numeral is invalid, return it unchanged.
+            return roman_str
 
         # Define a set of titles that indicate a regnal or papal name.
         titles = {
-            "King",
-            "Queen",
-            "Pope",
-            "Emperor",
-            "Empress",
-            "Czar",
-            "Cardinal",
-            "Bishop",
-            "Saint",
-            "Patriarch",
-            "Caliph",
-            "Sheikh",
-            "Khan",
-            "Sultan",
-            "Rajah",
-            "Maharaja",
-            "Maharani",
+            "King", "Queen", "Pope", "Emperor", "Empress", "Czar", "Cardinal",
+            "Bishop", "Saint", "Patriarch", "Caliph", "Sheikh", "Khan",
+            "Sultan", "Rajah", "Maharaja", "Maharani",
         }
 
         # Get the immediate surrounding words.
         preceding_text = text[:start].strip()
         preceding_words = preceding_text.split()
-        after_text = text[match.end() :].strip()
+        after_text = text[match.end():].strip()
         after_words = after_text.split()
 
         # Special handling for the token "I".
         if roman_str.upper() == "I":
             # If there's no title context (or if it's clearly used as a pronoun), return "I" unchanged.
-            if not (
-                preceding_words and any(word in titles for word in preceding_words)
-            ):
+            if not (preceding_words and any(word in titles for word in preceding_words)):
                 return roman_str
 
         # For a one-letter token...
         if len(roman_str) == 1:
             # If the next or previous word is also a single letter, assume an initials sequence.
-            if (after_words and len(after_words[0]) == 1) or (
-                preceding_words and len(preceding_words[-1]) == 1
-            ):
+            if (after_words and len(after_words[0]) == 1) or (preceding_words and len(preceding_words[-1]) == 1):
                 return roman_str
             # If any preceding word is a title, convert using ordinal conversion.
             if preceding_words and any(word in titles for word in preceding_words):
@@ -159,6 +142,75 @@ class TextProcessor:
         # Default: convert as a cardinal number.
         number = self._roman_to_int(roman_str)
         return self._process_number(number)
+
+    # def _handle_roman_numeral(self, match: re.Match) -> str:
+    #     """
+    #     Convert a matched Roman numeral into its spoken word form.
+    #     If the numeral appears as part of a sequence of initials or as a pronoun,
+    #     leave it unchanged. Otherwise, convert it.
+    #     """
+    #     roman_str = match.group(0)
+    #     text = match.string
+    #     start = match.start()
+
+    #     # Define a set of titles that indicate a regnal or papal name.
+    #     titles = {
+    #         "King",
+    #         "Queen",
+    #         "Pope",
+    #         "Emperor",
+    #         "Empress",
+    #         "Czar",
+    #         "Cardinal",
+    #         "Bishop",
+    #         "Saint",
+    #         "Patriarch",
+    #         "Caliph",
+    #         "Sheikh",
+    #         "Khan",
+    #         "Sultan",
+    #         "Rajah",
+    #         "Maharaja",
+    #         "Maharani",
+    #     }
+
+    #     # Get the immediate surrounding words.
+    #     preceding_text = text[:start].strip()
+    #     preceding_words = preceding_text.split()
+    #     after_text = text[match.end() :].strip()
+    #     after_words = after_text.split()
+
+    #     # Special handling for the token "I".
+    #     if roman_str.upper() == "I":
+    #         # If there's no title context (or if it's clearly used as a pronoun), return "I" unchanged.
+    #         if not (
+    #             preceding_words and any(word in titles for word in preceding_words)
+    #         ):
+    #             return roman_str
+
+    #     # For a one-letter token...
+    #     if len(roman_str) == 1:
+    #         # If the next or previous word is also a single letter, assume an initials sequence.
+    #         if (after_words and len(after_words[0]) == 1) or (
+    #             preceding_words and len(preceding_words[-1]) == 1
+    #         ):
+    #             return roman_str
+    #         # If any preceding word is a title, convert using ordinal conversion.
+    #         if preceding_words and any(word in titles for word in preceding_words):
+    #             number = self._roman_to_int(roman_str)
+    #             return self._process_ordinal(number)
+    #         # Otherwise, treat the one-letter token as a numeral.
+    #         number = self._roman_to_int(roman_str)
+    #         return self._process_number(number)
+
+    #     # For tokens longer than one letter, if a title is present in the preceding words, convert ordinally.
+    #     if preceding_words and any(word in titles for word in preceding_words):
+    #         number = self._roman_to_int(roman_str)
+    #         return self._process_ordinal(number)
+
+    #     # Default: convert as a cardinal number.
+    #     number = self._roman_to_int(roman_str)
+    #     return self._process_number(number)
 
     def _generate_lookup_table(self) -> Dict[int, str]:
         """Generate a lookup table for numbers 1-99."""
