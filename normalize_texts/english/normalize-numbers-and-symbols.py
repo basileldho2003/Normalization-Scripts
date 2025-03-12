@@ -34,9 +34,12 @@ class TextProcessor:
 
         # Symbols to convert to words
         self.symbols = {
-            '%': 'percent', '@': 'at', '&': 'and', '+': 'plus', '=': 'equals',
-            '/': 'per', '#': 'number', '*': 'asterisk', '°': 'degrees', '§': 'section',
-            '¶': 'paragraph', '©': 'copyright', '®': 'registered', '™': 'trademark'
+            "%": "percent", "@": "at", "&": "and", "+": "plus", "=": "equals", "/": "per",
+            "#": "number", "*": "asterisk", "°": "degrees", "§": "section", "¶": "paragraph",
+            "©": "copyright", "®": "registered", "™": "trademark", "~": "approximately",
+            "^": "power", "<": "less than", ">": "greater than", "≤": "less than or equal to",
+            "≥": "greater than or equal to", "±": "plus or minus", "≈": "approximately equal to",
+            "≠": "not equal to", "∞": "infinity"
         }
 
         # Letter-number prefix mappings
