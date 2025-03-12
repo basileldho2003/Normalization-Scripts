@@ -87,12 +87,16 @@ class TextProcessor:
                 total += value
             prev_value = value
         return total
-    
+
     def _handle_roman_numeral(self, match: re.Match) -> str:
         roman_str = match.group(0)
         text = match.string
         start = match.start()
-        
+
+        # If the token is not fully uppercase, assume it is a name or word and return it unchanged.
+        if roman_str != roman_str.upper():
+            return roman_str
+
         # Check for a valid Roman numeral using a well-known regex.
         valid_roman_pattern = r"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
         if not re.match(valid_roman_pattern, roman_str.upper()):
@@ -120,18 +124,17 @@ class TextProcessor:
 
         # For a one-letter token...
         if len(roman_str) == 1:
-            # If the next or previous word is also a single letter, assume an initials sequence.
-            if (after_words and len(after_words[0]) == 1) or (preceding_words and len(preceding_words[-1]) == 1):
+            if (after_words and len(after_words[0]) == 1) or (
+                preceding_words and len(preceding_words[-1]) == 1
+            ):
                 return roman_str
-            # If any preceding word is a title, convert using ordinal conversion.
             if preceding_words and any(word in titles for word in preceding_words):
                 number = self._roman_to_int(roman_str)
                 return self._process_ordinal(number)
-            # Otherwise, treat the one-letter token as a numeral.
             number = self._roman_to_int(roman_str)
             return self._process_number(number)
 
-        # For tokens longer than one letter, if a title is present in the preceding words, convert ordinally.
+        # For tokens longer than one letter, if a title is present, convert ordinally.
         if preceding_words and any(word in titles for word in preceding_words):
             number = self._roman_to_int(roman_str)
             return self._process_ordinal(number)
