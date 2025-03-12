@@ -87,12 +87,54 @@ class TextProcessor:
                 total += value
             prev_value = value
         return total
-    
+
+    def _int_to_roman_unicode(self, num: int) -> str:
+        """
+        Convert an integer to its Roman numeral representation.
+        For numbers less than 4000, a standard conversion is used.
+        For numbers 4000 and above, a combining overline (Unicode U+0305) is added to
+        denote multiplication by 1000.
+        """
+
+        def convert_to_roman(n: int) -> str:
+            val = [
+                (1000, "M"),
+                (900, "CM"),
+                (500, "D"),
+                (400, "CD"),
+                (100, "C"),
+                (90, "XC"),
+                (50, "L"),
+                (40, "XL"),
+                (10, "X"),
+                (9, "IX"),
+                (5, "V"),
+                (4, "IV"),
+                (1, "I"),
+            ]
+            result = ""
+            for v, symbol in val:
+                while n >= v:
+                    result += symbol
+                    n -= v
+            return result
+
+        if num < 4000:
+            return convert_to_roman(num)
+        else:
+            thousands = num // 1000
+            remainder = num % 1000
+            thousands_roman = convert_to_roman(thousands)
+            # Apply the combining overline to each character to denote multiplication by 1000.
+            thousands_overlined = "".join(ch + "\u0305" for ch in thousands_roman)
+            remainder_roman = convert_to_roman(remainder)
+            return thousands_overlined + remainder_roman
+
     def _handle_roman_numeral(self, match: re.Match) -> str:
         roman_str = match.group(0)
         text = match.string
         start = match.start()
-        
+
         # Check for a valid Roman numeral using a well-known regex.
         valid_roman_pattern = r"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
         if not re.match(valid_roman_pattern, roman_str.upper()):
@@ -138,6 +180,8 @@ class TextProcessor:
 
         # Default: convert as a cardinal number.
         number = self._roman_to_int(roman_str)
+        if number >= 4000:
+            return self._int_to_roman_unicode(number)
         return self._process_number(number)
 
     def _generate_lookup_table(self) -> Dict[int, str]:
