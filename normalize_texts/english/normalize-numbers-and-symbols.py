@@ -68,7 +68,8 @@ class TextProcessor:
             r"\bCapt\.?(?=\s|$|[,;:])": "Captain", r"\bMaj\.?(?=\s|$|[,;:])": "Major",
             r"\bLt\.?(?=\s|$|[,;:])": "Lieutenant", r"\bSmt\.?(?=\s|$|[,;:])": "Srimati",
             r"\bFr\.?(?=\s|$|[,;:])": "Father", r"\bHon'ble\.?(?=\s|$|[,;:])": "Honourable",
-            r"\bProf\.?(?=\s|$|[,;:])": "Professor", r"\bSh\.?(?=\s|$|[,;:])": "Shri"
+            r"\bProf\.?(?=\s|$|[,;:])": "Professor", r"\bSh\.?(?=\s|$|[,;:])": "Shri",
+            r"\bEr\.?(?=\s|$|[,;:])": "Engineer", r"\bAr\.?(?=\s|$|[,;:])": "Architect"
         }
 
         self.number_lookup = self._generate_lookup_table()
@@ -415,7 +416,7 @@ def split_sentences(text):
     abbreviations = [
         "Dr.", "Mr.", "Mrs.", "Ms.", "Sh.", "Jr.", "Sr.", 
         "Prof.", "Hon'ble.", "Col.", "Gen.", "Rev.","St."
-        "Fr. ", "Sgt.", "Capt.", "Maj.", "Lt.", "Smt."
+        "Fr. ", "Sgt.", "Capt.", "Maj.", "Lt.", "Smt.", "Er.", "Ar."
     ]
 
     placeholder_map = {abbr: abbr.replace(".", "<DOT>") for abbr in abbreviations}
