@@ -18,8 +18,8 @@ class TextProcessor:
         }
 
         self.tens = {
-            2: 'twenty', 3: 'thirty', 4: 'forty', 5: 'fifty', 6: 'sixty', 7: 'seventy', 
-            8: 'eighty', 9: 'ninety'
+            2: 'twenty', 3: 'thirty', 4: 'forty', 5: 'fifty', 
+            6: 'sixty', 7: 'seventy', 8: 'eighty', 9: 'ninety'
         }
 
         # Indian numbering system scales
@@ -27,12 +27,9 @@ class TextProcessor:
 
         # Currency symbols
         self.currency_symbols = {
-            "Rs": "Rupees",
-            "Rs.": "Rupees",
-            "₹": "Rupees",
-            "$": "Dollars",
-            "€": "Euros",
-            "£": "Pounds",
+            "Rs": "Rupees", "Rs.": "Rupees",
+            "₹": "Rupees", "$": "Dollars",
+            "€": "Euros", "£": "Pounds"
         }
 
         # Symbols to convert to words
